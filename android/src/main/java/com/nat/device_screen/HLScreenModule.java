@@ -107,20 +107,18 @@ public class HLScreenModule {
         Settings.System.putInt(mContext.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, value);
     }
 
-    private void setBrightness(Context context, float value) {
+    public void setBrightness(float value) {
         int screenMode = 0;
         try {
-            screenMode = Settings.System.getInt(context.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE);
+            screenMode = Settings.System.getInt(mContext.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE);
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
         }
 
-//        // 如果当前的屏幕亮度调节调节模式为自动调节，则改为手动调节屏幕亮度
         if(screenMode == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC){
             setScreenMode(Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
         }
 
-        // 保存设置的屏幕亮度值
-        Settings.System.putInt(context.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, (int) value);
+        Settings.System.putInt(mContext.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, (int) value*255);
     }
 }
