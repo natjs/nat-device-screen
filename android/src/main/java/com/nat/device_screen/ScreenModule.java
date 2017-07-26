@@ -9,10 +9,10 @@ import java.util.HashMap;
 
 /**
  * Created by xuqinchao on 17/2/7.
- * Copyright (c) 2017 Nat. All rights reserved.
+ * Copyright (c) 2017 Instapp. All rights reserved.
  */
 
-public class HLScreenModule {
+public class ScreenModule {
     private static final String ANY = "any";
     private static final String PORTRAIT_PRIMARY = "portrait-primary";
     private static final String PORTRAIT_SECONDARY = "portrait-secondary";
@@ -22,17 +22,17 @@ public class HLScreenModule {
     private static final String LANDSCAPE = "landscape";
 
     private Context mContext;
-    private static volatile HLScreenModule instance = null;
+    private static volatile ScreenModule instance = null;
 
-    private HLScreenModule(Context context){
+    private ScreenModule(Context context){
         mContext = context;
     }
 
-    public static HLScreenModule getInstance(Context context) {
+    public static ScreenModule getInstance(Context context) {
         if (instance == null) {
-            synchronized (HLScreenModule.class) {
+            synchronized (ScreenModule.class) {
                 if (instance == null) {
-                    instance = new HLScreenModule(context);
+                    instance = new ScreenModule(context);
                 }
             }
         }
@@ -40,17 +40,17 @@ public class HLScreenModule {
         return instance;
     }
 
-    public void info(HLModuleResultListener listener){
+    public void info(ModuleResultListener listener){
         HashMap<String, Object> result = new HashMap<>();
-        result.put("height", HLUtil.getScreenHeight(mContext));
-        result.put("width", HLUtil.getScreenWidth(mContext));
-        result.put("scale", HLUtil.getDensity(mContext));
-        result.put("dpiX", (int)HLUtil.getScreenDpiX(mContext));
-        result.put("dpiY", (int)HLUtil.getScreenDpiY(mContext));
+        result.put("height", Util.getScreenHeight(mContext));
+        result.put("width", Util.getScreenWidth(mContext));
+        result.put("scale", Util.getDensity(mContext));
+        result.put("dpiX", (int) Util.getScreenDpiX(mContext));
+        result.put("dpiY", (int) Util.getScreenDpiY(mContext));
         listener.onResult(result);
     }
 
-    public void getBrightness(HLModuleResultListener listener){
+    public void getBrightness(ModuleResultListener listener){
         try {
             int screenBrightness = Settings.System.getInt(mContext.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
             float brightness = screenBrightness / 255.0f;
@@ -59,11 +59,11 @@ public class HLScreenModule {
             listener.onResult(result);
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
-            listener.onResult(HLUtil.getError(e.getMessage(), -1));
+            listener.onResult(Util.getError(e.getMessage(), -1));
         }
     }
 
-    public void getOrientation(HLModuleResultListener listener){
+    public void getOrientation(ModuleResultListener listener){
         String orientation;
         if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             orientation = "landscape";
@@ -75,7 +75,7 @@ public class HLScreenModule {
         listener.onResult(result);
     }
 
-    public void lockOrientation(Activity activity, String orientation, HLModuleResultListener listener){
+    public void lockOrientation(Activity activity, String orientation, ModuleResultListener listener){
         if (activity == null || listener == null) return;
         if (orientation.equals(ANY)) {
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
@@ -97,7 +97,7 @@ public class HLScreenModule {
         getOrientation(listener);
     }
 
-    public void unlockOrientation(Activity activity, HLModuleResultListener listener){
+    public void unlockOrientation(Activity activity, ModuleResultListener listener){
         if (activity == null || listener == null) return;
         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         getOrientation(listener);
